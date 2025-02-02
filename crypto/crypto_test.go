@@ -1,11 +1,8 @@
 package crypto
 
 import (
-	"crypto/rand"
-	"encoding/hex"
 	"fmt"
 	"github.com/stretchr/testify/assert"
-	"io"
 	"testing"
 )
 
@@ -68,11 +65,12 @@ func TestAddress(t *testing.T) {
 }
 
 func TestNewPrivateKeyFromString(t *testing.T) {
-	seed := make([]byte, seedLength)
-	fmt.Println(hex.EncodeToString(seed))
-	_, err := io.ReadFull(rand.Reader, seed)
-	if err != nil {
-		return
-	}
-	fmt.Println(hex.EncodeToString(seed))
+	seed := "f327edf67f00184f535f49596bc5d3080f918b9584ca7b6b21d234e42c651c6d"
+	addressString := "c7006c0b769d3c9fe2cbbe9e9369bfe91acc9a45"
+
+	privKey := NewPrivateKeyFromString(seed)
+	assert.Equal(t, privateKeyLength, len(privKey.Bytes()))
+	address := privKey.PublicKey().Address()
+	assert.Equal(t, addressString, address.String())
+	assert.Equal(t, addressLength, len(address.Bytes()))
 }
